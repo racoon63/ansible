@@ -1,0 +1,15 @@
+---
+- hosts: '{{ server }}'
+  become: true
+  remote_user: root
+  tasks:
+    - name: Update repository cache
+      apt:
+        update_cache: yes
+    - name: Update installed packages
+      apt:
+        upgrade: dist
+    - name: remove unused packages
+      apt:
+        autoclean: yes
+        autoremove: yes
