@@ -1,0 +1,35 @@
+---
+- name: Create a virtual machine on given ESXi
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: create vm
+    vmware_guest:
+      hostname: "{{ HOSTNAME OR IP OF YOUR VCENTER }}"
+      username: "{{ administrator@YOUR-DOMAIN }}"
+      password: "{{ YOUR PASSWORD FOR ACCOUNT ABOVE }}"
+      validate_certs: no
+      folder: /dc/vm/
+      datacenter: {{ NAME OF YOUR DATACENTER }}
+      name: vm001
+      state: poweredoff
+      guest_id: centos64Guest
+      esxi_hostname: "{{ ESXI HOSTNAME OR IP }}"
+      disk:
+      - size_gb: 10
+        type: thin
+        datastore: {{ NAME OF YOUR DATASTORE }}
+      hardware:
+        memory_mb: 1024
+        num_cpus: 2
+        scsi: paravirtual
+      networks:
+      - name: prod
+        mac: aa:bb:dd:aa:00:14
+        ip: {{ IP OF THE VM }}
+        netmask: 255.255.255.0
+        device_type: vmxnet3
+      wait_for_ip_address: no # if it is set to yes, ansible will wait until vm is reachable
+    delegate_to: localhost
+    register: deploy_vm
