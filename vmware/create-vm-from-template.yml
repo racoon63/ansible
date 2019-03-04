@@ -1,0 +1,25 @@
+---
+- name: Create a VM from a template
+  hosts: 127.0.0.1
+  connection: local
+  vars: 
+    vcenter_ip: # ENTER HERE
+    vcenter_username: # ENTER HERE
+    vcenter_password: # ENTER HERE
+    datacenter_name: # ENTER HERE
+    cluster_name: # ENTER HERE
+  gather_facts: no
+  tasks:
+  - name: Clone the template
+    vmware_guest:
+      hostname: "{{ vcenter_ip }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: False
+      name: testvm_1
+      template: vm-template
+      datacenter: "{{ datacenter_name }}"
+      folder: /path/to/template
+      state: poweredon
+      cluster: "{{ cluster_name }}"
+      wait_for_ip_address: yes
