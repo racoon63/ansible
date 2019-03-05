@@ -6,6 +6,7 @@ This repository is for learning purpose and for different use cases that are cat
 ## Available Examples
 
 * Create a new VM with VMware ESXi, vCenter and Ansible
+* Prepare VM/target host for ansible via ssh
 
 ## Planned Examples
 
