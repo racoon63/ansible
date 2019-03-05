@@ -6,10 +6,10 @@ This repository is for learning purpose and for different use cases that are cat
 ## Available Examples
 
 * Create a new VM with VMware ESXi, vCenter and Ansible
+* Create VM from given Template on vCenter
 * Prepare VM/target host for ansible via ssh
 
 ## Planned Examples
 
-* Create VM from given Template on vCenter
 * automated update from Templates on latest OS versions (RHEL, Centos, Fedora, Debian)
 * automated installation of docker hosts (manager or workers) (on RHEL, Centos, Fedora, Debian)
