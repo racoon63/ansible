@@ -8,6 +8,7 @@ This repository is for learning purpose and for different use cases that are cat
 * Create a new VM with VMware ESXi, vCenter and Ansible
 * Create VM from given Template on vCenter
 * Prepare VM/target host for ansible via ssh
+* Dockerfile to create docker image to exercise with ansible
 
 ## Planned Examples
 
