@@ -1,0 +1,8 @@
+---
+- name: Install software
+  hosts: "{{server}}"
+  become: true
+  tasks:
+    - name: Install packages
+      yum:
+        name: "{{packages}}"

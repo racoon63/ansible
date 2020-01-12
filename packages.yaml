@@ -1,0 +1,9 @@
+---
+- name: Install software
+  hosts: host1
+  become: true
+  remote_user: root
+  tasks:
+    - name: Install packages
+      yum:
+        name: "{{packages}}"
