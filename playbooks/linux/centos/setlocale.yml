@@ -1,0 +1,33 @@
+# Execute this playbook with:
+#
+# ansible-playbook setlocale.yml -e "target_host=1.2.3.4" -i "1.2.3.4" --user your-username --private-key ~/.ssh/id_rsa
+#
+---
+- name: Set locale
+  hosts: '{{target_host}}'
+  become: true
+  gather_facts: false
+  
+  tasks:
+    - name: Check that file /etc/environment exists
+      stat:
+        path: /etc/environment
+      register: stat_result
+
+    - name: Create /etc/environment when it does not exist
+      file:
+        path: /etc/environment
+        state: touch
+      when: stat_result.stat.exists == False
+
+    - name: Adds "LANG=en_US.utf-8" to /etc/environment if not present
+      lineinfile:
+        path: /etc/environment
+        line: "LANG=en_US.utf-8"
+        state: present
+
+    - name: Adds "LC_ALL=en_US.utf-8" to /etc/environment if not present
+      lineinfile:
+        path: /etc/environment
+        line: "LC_ALL=en_US.utf-8"
+        state: present
