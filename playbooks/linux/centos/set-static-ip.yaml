@@ -1,0 +1,68 @@
+# To execute this playbook run the following command:
+#
+# ansible-playbook set-static-ip.yaml -e '{ "targethost": "test", "cidr": "192.168.99.200/24", "gw": "192.168.99.2", "interface": "enp0s8" }' -i hosts.yaml
+#
+# Tested on: centOS 8
+---
+- name: Set static IP to desired host
+  hosts: '{{ targethost }}'
+  become: true
+  gather_facts: no
+  
+  tasks:
+    - name: Make sure NetworkManager and python3 is installed
+      dnf:
+        name: 
+          - dbus
+          - NetworkManager
+          - NetworkManager-libnm
+          - python3
+          - python3-pip
+          - python3-setuptools
+        state: present
+        update_cache: yes
+
+    - name: Install virtualenv via pip
+      pip:
+        name:
+          - virtualenv
+        extra_args: --user
+        state: present
+
+    - name: Set static ip '{{ cidr }}'
+      command:
+        cmd: nmcli con mod '{{ interface }}' ipv4.addresses '{{ cidr }}'
+          
+    - name: Set gateway '{{ gw }}'
+      command:
+        cmd: nmcli con mod '{{ interface }}' ipv4.gateway '{{ gw }}'
+          
+    - name: Set mode to manual/static configuration
+      command:
+        cmd: nmcli con mod '{{ interface }}' ipv4.method manual
+          
+    - name: Set dns server
+      command:
+        cmd: nmcli con mod '{{ interface }}' ipv4.dns "1.1.1.1"
+
+    - name: Restart interface '{{ interface }}'
+      command:
+        cmd: nmcli con up '{{ interface }}'
+      async: 1
+      poll: 0
+
+    ### The following can't be executed according to a deprecated python library: NetworkManager-glib
+    ### For infomration see here: https://github.com/ansible/ansible/issues/48055
+
+    #- name: Set static ip '{{ cidr }}' to interface '{{ interface }}'
+    #  nmcli:
+    #    state: present
+    #    conn_name: primary
+    #    ifname: enp0s8
+    #    ip4: '{{ cidr }}'
+    #    gw4: '{{ gw }}'
+    #    dns4:
+    #      - 1.1.1.1
+    #      - 8.8.8.8
+    #      - 9.9.9.9
+
