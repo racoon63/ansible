@@ -2,6 +2,8 @@
 
 This repository is for learning purpose and for different use cases that are categoized within directories.
 
+[Documentation](https://docs.ansible.com/ansible/latest/index.html)
+
 ## Available Examples
 
 * Create a new VM with VMware ESXi, vCenter and Ansible
