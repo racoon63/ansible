@@ -1,0 +1,44 @@
+# Run this playbook with
+#
+# ansible-playbook install-docker.yml -e target_host=1.2.3.4 -i "1.2.3.4,"
+#
+---
+- name: Install docker on Raspbian 10 (Buster)
+  hosts: '{{target_host}}'
+  become: true
+  gather_facts: false
+  
+  tasks:
+    - name: Remove existing docker packages for fresh installation
+      apt:
+        state: absent
+        purge: yes
+        autoremove: yes
+        autoclean: yes
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+
+    - name: Install packages to allow apt to use a repository over HTTPS
+      apt:
+        state: present
+        update_cache: yes
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+
+    - name: Add Docker’s official GPG key
+      apt_key:
+        file: https://download.docker.com/linux/debian/gpg
+        state: present
+        validate_certs: yes
+
+    - name: Add docker repository
+      apt_repository:
+        repo: deb [arch=armhf] https://download.docker.com/linux/debian buster stable
