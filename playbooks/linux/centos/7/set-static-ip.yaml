@@ -11,23 +11,12 @@
   
   tasks:
     - name: Make sure NetworkManager and python3 is installed
-      dnf:
+      yum:
         name: 
           - dbus
           - NetworkManager
-          - NetworkManager-libnm
-          - python3
-          - python3-pip
-          - python3-setuptools
         state: present
         update_cache: yes
-
-    - name: Install virtualenv via pip
-      pip:
-        name:
-          - virtualenv
-        extra_args: --user
-        state: present
 
     - name: Set static ip '{{ cidr }}'
       command:
