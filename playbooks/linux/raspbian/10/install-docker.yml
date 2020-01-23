@@ -1,10 +1,10 @@
 # Run this playbook with
 #
-# ansible-playbook install-docker.yml -e target_host=1.2.3.4 -i "1.2.3.4,"
+# ansible-playbook install-docker.yml -e target_host=1.2.3.4 -i hosts.yml
 #
 ---
 - name: Install docker on Raspbian 10 (Buster)
-  hosts: '{{target_host}}'
+  hosts: '{{ target_host }}'
   become: true
   gather_facts: false
   
@@ -27,18 +27,47 @@
         state: present
         update_cache: yes
         name:
-          - docker
-          - docker-engine
-          - docker.io
-          - containerd
-          - runc
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg2
+          - software-properties-common
 
     - name: Add Docker’s official GPG key
       apt_key:
-        file: https://download.docker.com/linux/debian/gpg
+        url: https://download.docker.com/linux/debian/gpg
         state: present
         validate_certs: yes
-
+    
     - name: Add docker repository
       apt_repository:
         repo: deb [arch=armhf] https://download.docker.com/linux/debian buster stable
+    
+    - name: Install packages to allow apt to use a repository over HTTPS
+      apt:
+        state: present
+        update_cache: yes
+        install_recommends: no # This option has to be removed in the future but the aufs-* packages are still marked as recommended for docker installation
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+      
+    - name: Add group docker
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to group docker
+      user:
+        name: pi
+        append: yes
+        groups:
+          - docker
+
+    - name: Start and enable docker.service
+      systemd:
+        daemon_reload: yes
+        name: docker
+        enabled: yes
+        state: started
