@@ -1,0 +1,9 @@
+---
+- hosts: 'test'
+  remote_user: ansible
+  become: yes
+  tasks:
+    - name: upgrade all packages
+      yum:
+        name: '*'
+        state: latest
