@@ -1,0 +1,32 @@
+# To execute this playbook run the following command:
+#
+# ansible-playbook add-admin-user.yaml -e '{ "targethost": "test", "user", "username", "passwd": "your_pwd" }' -i hosts.yaml
+#
+# Tested on: centOS 8
+---
+- name: Add user with sudo rights for ansible
+  hosts: '{{ targethost }}'
+  become: true
+  gather_facts: no
+
+  tasks:
+    - name: Install dependencies
+      yum:
+        name: libselinux-python
+        state: present
+
+    - name: Add user '{{ user }}'
+      user:
+        name: '{{ user }}'
+        append: yes
+        password: '{{ passwd }}' # docker run -it --rm racoon/pwgen
+        groups:
+          - wheel
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
