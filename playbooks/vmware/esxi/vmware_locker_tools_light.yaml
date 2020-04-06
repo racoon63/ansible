@@ -4,8 +4,8 @@
 - name: Create a VM from a template
   hosts: esxi
   vars:
-    url: https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/esx/vmw/vib20/tools-light/VMware_locker_tools-light_11.0.1.14773994-15160134.vib
-    filename: VMware_locker_tools-light_11.0.1.14773994-15160134.vib
+    url: https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/esx/vmw/vib20/tools-light/VMware_locker_tools-light_{{ version }}.vib
+    filename: VMware_locker_tools-light.vib
   
   tasks:
     - name: Download VMware_locker_tools-light
