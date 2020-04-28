@@ -1,0 +1,33 @@
+ClientAliveInterval 300
+ClientAliveCountMax 0
+PermitEmptyPasswords no
+Port 40022
+AllowUsers pi,ansible
+PermitRootLogin no
+Protocol 2
+PasswordAuthentication no
+PubkeyAuthentication yes
+ListenAddress {{ STATIC_IP }}
+IgnoreRhosts yes
+HostbasedAuthentication no
+
+# Google 2FA Authentication
+#AuthenticationMethods publickey,password publickey,keyboard-interactive
+#ChallengeResponseAuthentication yes
+#UsePAM yes
+
+# Allowed HostKey algorithms
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Specifies the available KEX (Key Exchange) algorithms.
+KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+ 
+# Specifies the ciphers allowed
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+ 
+#Specifies the available MAC (message authentication code) algorithms
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
+ 
+# LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
+LogLevel VERBOSE

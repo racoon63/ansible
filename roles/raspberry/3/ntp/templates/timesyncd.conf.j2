@@ -1,0 +1,6 @@
+# /etc/systemd/timesyncd.conf, configuration for timesyncd; see timesyncd.conf for help
+
+[Time]
+NTP={% for server in ntp_servers %}
+{% server %}
+{% endfor %}

@@ -1,0 +1,17 @@
+---
+- name: Change password of user pi
+  user:
+    name: pi
+    password: '{{ PI_PASSWD }}'
+    update_password: always
+
+- name: Create user ansible
+  user:
+    name: '{{ ansible_user }}'
+    password: '!'
+    shell: /bin/bash
+    state: present    
+    groups:
+      - sudo
+    append: yes
+    

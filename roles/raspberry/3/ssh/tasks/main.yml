@@ -1,0 +1,65 @@
+---
+# - name: TEST
+#   become: no
+#   connection: local
+#   shell: ls -l
+#   register: result
+
+# - debug:
+#     msg: '{result}'
+
+- name: Generate authorized_keys file
+  become: no
+  local_action: script files/genauthkeys.sh 
+  connection: local
+
+- name: Create .ssh directory for user pi
+  file:
+    path: /home/pi/.ssh
+    state: directory
+    mode: '0755'
+    owner: pi
+    group: pi
+
+- name: Deploy authorized_keys file to user pi
+  copy:
+    dest: /home/pi/
+    src: authorized_keys
+    directory_mode: '0755'
+    mode: '0600'
+    owner: pi
+    group: pi
+    backup: yes
+
+- name: Create .ssh directory for user ansible
+  file:
+    path: /home/ansible/.ssh
+    state: directory
+    mode: '0755'
+    owner: ansible
+    group: ansible
+
+- name: Deploy authorized_keys file to user ansible
+  copy:
+    dest: /home/ansible/
+    src: authorized_keys
+    directory_mode: '0755'
+    mode: '0600'
+    owner: ansible
+    group: ansible
+    backup: yes
+
+- name: Deploy sshd config file
+  template:
+    src: sshd_config.j2
+    dest: /etc/sshd_config
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Restart sshd service
+  systemd:
+      name: sshd
+      enabled: yes
+      state: restarted

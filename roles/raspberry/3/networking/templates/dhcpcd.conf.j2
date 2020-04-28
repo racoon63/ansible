@@ -1,0 +1,18 @@
+# For more information see: man dhcpcd.conf
+
+hostname
+clientid
+persistent
+require dhcp_server_identifier
+slaac private
+
+option rapid_commit
+option domain_name_servers, domain_name, domain_search, host_name
+option ntp_servers
+option classless_static_routes
+option interface_mtu
+
+interface eth0
+static ip_address={{ STATIC_IP }}/24
+static routers={{ GW_IP }}
+static domain_name_servers={{ NAMESERVER }}

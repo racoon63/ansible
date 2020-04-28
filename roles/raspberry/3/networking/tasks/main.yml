@@ -1,0 +1,22 @@
+---
+# tasks file for networking
+- name: Check dhcpcd5 is installed.
+  become: yes
+  apt:
+    name: dhcpcd5
+    state: present
+  
+- name: Provision config file
+  become: yes
+  template:
+    src: dhcpcd.conf.j2
+    dest: /etc/dhcpcd.conf
+    owner: root
+    group: netdev
+    mode: '0664'
+    backup: yes
+
+- name: Reboot target host
+  become: yes
+  shell: "sleep 5 && reboot"
+  poll: 0
