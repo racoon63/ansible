@@ -1,0 +1,30 @@
+---
+- name: Get latest terraform version
+  uri:
+    url: 'https://checkpoint-api.hashicorp.com/v1/check/terraform'
+    method: GET
+    status_code: 200
+    timeout: 10
+  register: release
+
+- set_fact:
+    version: "{{ release.json | json_query('current_version') }}"
+
+- name: Create /usr/local/bin if directory does not exist
+  become: yes
+  file:
+    path: /usr/local/bin
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install terraform
+  become: yes
+  unarchive:
+    src: 'https://releases.hashicorp.com/terraform/{{ version }}/terraform_{{ version }}_linux_amd64.zip'
+    remote_src: yes
+    dest: /usr/local/bin
+    owner: root
+    group: root
+    mode: '0755'
